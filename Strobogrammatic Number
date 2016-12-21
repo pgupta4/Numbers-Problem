@@ -1,0 +1,110 @@
+package strobgrammaticNumber;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.lang.String;
+import java.util.List;
+import java.util.Map;
+public class Solution {
+	private HashMap<String, String> candidate= new HashMap<String, String> ();
+	
+	public List findStrobgrammatic(int n)
+	{
+		List<String> result = new ArrayList<String>();
+		candidate.put("0", "0");
+		candidate.put("1", "1");
+		candidate.put("6", "9");
+		candidate.put("9", "6");
+		candidate.put("8", "8");
+		
+		result = search(n);
+		for (int i = 0; i < result.size(); i++) {
+			if ((Long.parseLong(result.get(i))+"").length() != n) {
+				result.remove(i);
+				i--;
+			}
+		}
+		return result;
+		
+	}
+	public boolean isStrobgrammatic(String n)
+	{
+		int i =0, j = n.length()-1;
+		char L, R;
+		 for (int l = 0, r = n.length() - 1; l <= r; l++, r--)
+		 {
+			 char first = n.charAt(l);
+			 char second = n.charAt(r);
+			 if(first == second)
+			 {
+				 if(first != '0' && first != '1' && first != '8')
+				 {
+					 return false;
+				 }
+			 }
+			 else
+			 {
+				 if((first != '6' || second != '9') && (first != '9' || second != '6') )
+				 {
+					 return false;
+				 }
+			 }
+			 
+		 }
+		 return true;
+	}
+	public List<String> search(int n)
+	{
+		List<String> list= new ArrayList<String>();
+		if(n <= 0)
+			return list;
+			
+		if(n == 1)
+		{
+			list.add("0");
+			list.add("1");
+			list.add("8");
+			return list;
+		}
+		else if(n == 2)
+		{
+			list.add("00");
+			list.add("11");
+			list.add("88");
+			list.add("69");
+			list.add("96");
+			list.add("88");
+			return list;
+		}
+		else
+		{
+			// n >2
+			List<String> temp = search(n-2);
+			
+			for(String str : temp)
+			{
+				for(Map.Entry<String, String> entry : candidate.entrySet())
+				{
+					list.add(entry.getKey()+str+entry.getValue());
+				}
+			}	
+		} 
+			return list;
+	}
+}
+
+public class main {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Solution s = new Solution();
+		List<String> result = s.findStrobgrammatic(3);
+		
+		for(String str : result)
+		{
+			System.out.println(str);
+		}
+		System.out.print(s.isStrobgrammatic("50"));
+	}
+
+}
